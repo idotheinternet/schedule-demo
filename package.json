@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "node server",
+    "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -11,7 +11,7 @@
     "postinstall": "ng build --aot --prod"
   },
   "engines": {
-    "node": "11.14.0",
+    "node": "12.18.3",
     "npm": "6.7.0"
   },
   "private": true,
