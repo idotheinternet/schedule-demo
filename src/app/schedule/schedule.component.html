@@ -1,0 +1,95 @@
+<div id="nav"></div>
+<div id="main">
+    <div id="left">
+        <div class="item">
+            <div class="label">1-Week Range:</div>
+            <div class="items pill" (click)="initRange()" [ngClass]="{'active': rangeMode}">
+                <div class="slider"></div>
+            </div>
+        </div>
+        <div class="item" id="find" (click)="findAvailable()" [ngClass]="{'disabled': calendar[idx].status !== undefined}">Find Available</div>
+        <div class="item" id="days">
+            <div>S</div>
+            <div>M</div>
+            <div>T</div>
+            <div>W</div>
+            <div>T</div>
+            <div>F</div>
+            <div>S</div>
+        </div>
+        <div id="calendar">
+            <div id="first" [ngStyle]="{'width.px': 60 * firstDay}"></div>
+            <div class="day" *ngFor="let day of calendar; let i = index;" [ngClass]="{'in-range': rangeMode && (i < (idx + 7)) && i >= idx}">
+                <div class="day-inner" [ngClass]="{'selected': day.date === selectedDate}" (click)="selectDay(day.date, i)">
+                    {{ getDay(day.date) }}
+                    <div class="status {{ day.status !== undefined ? !day.status ? 'g' : day.status === 1 ? 'y' : 'r' : '' }}"></div> 
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="right">
+        <div class="item">
+            <div class="label">Schedule Date:&nbsp;<div>{{ getSelectedDate() }}</div></div>
+            <div class="items">
+                <div class="selection active" (click)="initView(false)" [ngClass]="{'active': !installerView}">
+                    Schedule
+                    <div class="side"></div>
+                </div>
+                <div class="selection" style="margin-right: 10px" (click)="initView(true)" [ngClass]="{'active': installerView, 'disabled': calendar[idx].status === undefined || calendar[idx].status === 2}">
+                    Installers
+                    <div class="side"></div>
+                </div>
+            </div>
+        </div>
+        <!---->
+        <div class="item">
+            <div class="label">Status:&nbsp;<div id="small" *ngIf="calendar[idx].status === undefined" (click)="findAvailable()">Get Availability</div><div class="{{ !calendar[idx].status ? 'g' : calendar[idx].status === 1 ? 'y' : 'r' }}" id="status" *ngIf="calendar[idx].status !== undefined">{{ getAvailability() }}</div></div>
+            <div class="items" *ngIf="installerView">
+                <div class="selection active" (click)="initAvailable(true)" [ngClass]="{'active': availableView}">
+                    Available
+                    <div class="side"></div>
+                </div>
+                <div class="selection" style="margin-right: 10px" (click)="initAvailable(false)" [ngClass]="{'active': !availableView}">
+                    Unavailable
+                    <div class="side"></div>
+                </div>
+            </div> 
+        </div>
+        <div id="view">
+            <div id="slider" [ngStyle]="{'transform': 'translateX(' + (!installerView ? 0 : -50) + '%)'}">
+                <div class="container">
+                    <div class="item" style="border-bottom: none; padding-bottom: 0px;">
+                        <div class="label">Job Duration:&nbsp;<div style="color: gray; font-weight: normal;">IMPLEMENTATION PENDING</div></div>
+                    </div>
+                    <div class="item" style="border-bottom: none; padding-bottom: 0px;">
+                        <div class="label">Start Time:&nbsp;<div style="color: gray; font-weight: normal;">IMPLEMENTATION PENDING</div></div>
+                    </div>
+                    <div class="item" style="border-bottom: none; padding-bottom: 0px;">
+                        <div class="label">Installer:&nbsp;<div style="color: gray; font-weight: normal;">{{ installer ? installer.name : 'UNASSIGNED' }}</div></div>
+                    </div>
+                </div>
+                <div class="container" [ngStyle]="{'height': !installerView ? (420 + 'px') : 'auto'}">
+                    <form *ngIf="availableView">
+                        <div class="installer" *ngFor="let item of calendar[idx].installers" [ngClass]="{'active': installer && (item.name === installer.name)}">
+                            <input type="radio" name="installer" (change)="selectInstaller(item)">
+                            <div class="label">{{ item.name }}</div>
+                            <div class="icons" style="display: inline-flex; align-items: center; transform: translateX(-50px); border-right: 1px solid #d9d9d9;">
+                                <i class="fas fa-people-carry" style="color: #3367d6; margin-right: 15px; cursor: pointer;" title="View Installer Info"></i>
+                                <i class="fas fa-exclamation-triangle" style="color: #ffa500; margin-right: 15px; cursor: pointer;" title="View Warnings"></i>
+                            </div>
+                            <div class="items">
+                                <div class="score {{ item.score >= 90 ? 'g' : item.score < 90 && item.score >= 80 ? 'y' : item.score < 80 && item.score >= 70 ? 'r' : '' }}">{{ item.score }}</div>
+                            </div>
+                        </div>
+                    </form>
+                    <div style="position: relative; width: 100%; height: auto;" *ngIf="!availableView">
+                        <div class="installer" *ngFor="let item of calendar[idx].unavailables">
+                            <div class="label">{{ item.name }}</div>
+                            <i class="fas fa-info-square" style="color: #3367d6; cursor: pointer; font-size: 20px;" title="View Unavailability Info"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

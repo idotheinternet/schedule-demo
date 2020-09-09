@@ -1,0 +1,7 @@
+body, div, form, input {
+    margin: 0;
+    font-family: sans-serif;
+}
+div, form, input {
+    box-sizing: border-box;
+}
